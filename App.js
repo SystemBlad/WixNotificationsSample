@@ -1,52 +1,136 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
-import React from 'react';
 import {
-  SafeAreaView,
+  AppRegistry,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
-  Button,
+  Button
 } from 'react-native';
+import React, {Component} from 'react';
+import {Notifications, NotificationAction, NotificationCategory} from 'react-native-notifications';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import {
-  Notifications,
-  NotificationAction,
-  NotificationCategory,
-} from 'react-native-notifications';
+export default class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      notifications: [],
+      openedNotifications: [],
+    };
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
+    this.registerNotificationEvents();
+    this.setCategories();
+  }
+
+  registerNotificationEvents() {
+    Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
+      this.setState({
+        notifications: [...this.state.notifications, notification]
+      });
+
+      completion({alert: notification.payload.showAlert, sound: false, badge: false});
+    });
+
+    Notifications.events().registerNotificationOpened((notification, completion) => {
+      this.setState({
+        openedNotifications: [...this.state.openedNotifications, notification]
+      });
+
+      completion();
+    });
+  }
+
+  requestPermissions() {
+    Notifications.registerRemoteNotifications();
+  }
+
+  setCategories() {
+    const upvoteAction = new NotificationAction({
+      activationMode: 'background',
+      title: String.fromCodePoint(0x1F44D),
+      identifier: 'UPVOTE_ACTION'
+    });
+
+    const replyAction = new NotificationAction({
+      activationMode: 'background',
+      title: 'Reply',
+      authenticationRequired: true,
+      textInput: {
+        buttonTitle: 'Reply now',
+        placeholder: 'Insert message'
+      },
+      identifier: 'REPLY_ACTION'
+    });
+
+
+    const category = new NotificationCategory({
+      identifier: 'SOME_CATEGORY',
+      actions: [upvoteAction, replyAction]
+    });
+
+    Notifications.setCategories([category]);
+  }
+
+  sendLocalNotification() {
+    Notifications.postLocalNotification({
+      body: 'Local notificiation!',
+      title: 'Local Notification Title',
+      sound: 'chime.aiff',
+      category: 'SOME_CATEGORY',
+      link: 'localNotificationLink',
+    });
+  }
+
+  removeAllDeliveredNotifications() {
+    Notifications.removeAllDeliveredNotifications();
+  }
+
+  async componentDidMount() {
+    const initialNotification = await Notifications.getInitialNotification();
+    if (initialNotification) {
+      this.setState({notifications: [initialNotification, ...this.state.notifications]});
+    }
+  }
+
+  renderNotification(notification) {
+    return (
+        <View style={{backgroundColor: 'lightgray', margin: 10}}>
+          <Text>{`Title: ${notification.title}`}</Text>
+          <Text>{`Body: ${notification.body}`}</Text>
+          <Text>{`Extra Link Param: ${notification.payload.link}`}</Text>
+        </View>
+    );
+  }
+
+  renderOpenedNotification(notification) {
+    return (
+        <View style={{backgroundColor: 'lightgray', margin: 10}}>
+          <Text>{`Title: ${notification.title}`}</Text>
+          <Text>{`Body: ${notification.body}`}</Text>
+          <Text>{`Notification Clicked: ${notification.payload.link}`}</Text>
+        </View>
+    );
+  }
+
+  render() {
+    const notifications = this.state.notifications.map((notification, idx) =>
+        (
+            <View key={`notification_${idx}`}>
+              {this.renderNotification(notification)}
             </View>
-          )}
-          <View style={styles.body}>
-            <Button
-              title={'Request permissions'}
+        ));
+    const openedNotifications = this.state.openedNotifications.map((notification, idx) =>
+        (
+            <View key={`notification_${idx}`}>
+              {this.renderOpenedNotification(notification)}
+            </View>
+        ));
+    return (
+        <View style={styles.container}>
+          <Button title={'Request permissions'} onPress={this.requestPermissions} testID={'requestPermissions'} />
+          <Button title={'Send local notification'} onPress={this.sendLocalNotification} testID={'sendLocalNotification'} />
+          <Button title={'Remove all delivered notifications'} onPress={this.removeAllDeliveredNotifications} />
+          <Button
+              title={'Request Token'}
               onPress={() => {
                 Notifications.registerRemoteNotifications();
                 Notifications.events().registerRemoteNotificationsRegistered((event: Registered) => {
@@ -58,77 +142,30 @@ const App: () => React$Node = () => {
                 });
               }}
               testID={'requestPermissions'}
-            />
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+          />
+          {notifications}
+          {openedNotifications}
+        </View>
+    );
+  }
+}
+
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
   },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
   },
 });
-
-export default App;

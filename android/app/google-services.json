@@ -1,80 +1,52 @@
 {
   "project_info": {
-    "project_number": "1062658629058",
-    "firebase_url": "https://systembladmaps.firebaseio.com",
-    "project_id": "systembladmaps",
-    "storage_bucket": "systembladmaps.appspot.com"
+    "project_number": "244810579453",
+    "firebase_url": "https://trackgts-2f941.firebaseio.com",
+    "project_id": "trackgts-2f941",
+    "storage_bucket": "trackgts-2f941.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1062658629058:android:591d191820229c46",
+        "mobilesdk_app_id": "1:244810579453:android:364d569b53d57e43",
         "android_client_info": {
-          "package_name": "com.sky.app"
+          "package_name": "com.trackgts.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1062658629058-ra9f8nspfqqfb4u6cqgp5ut298q61bac.apps.googleusercontent.com",
+          "client_id": "244810579453-18ie1epprg9rk91mcgmj8hund2l93l0n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trackgts.app",
+            "certificate_hash": "aa6f3804cb8030e9646f2a8a4be3b169f21c2178"
+          }
+        },
+        {
+          "client_id": "244810579453-4fq9b3janbpl6k96ihh5alrp8prk3e8t.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAN-eM1yATR-qmVz05oeMrTd_H3Xq1wus4"
+          "current_key": "AIzaSyCdcWxP7mSAruZbwxKT-nYAmiQXA3sxbMY"
         }
       ],
       "services": {
+        "analytics_service": {
+          "status": 1
+        },
         "appinvite_service": {
+          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1062658629058-ra9f8nspfqqfb4u6cqgp5ut298q61bac.apps.googleusercontent.com",
+              "client_id": "244810579453-4fq9b3janbpl6k96ihh5alrp8prk3e8t.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "1062658629058-qd8sf69pc809o25mm0msj24348tdakld.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.sky.app"
-              }
             }
           ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1062658629058:android:0ece6ad0212c7ed2",
-        "android_client_info": {
-          "package_name": "com.systemblad.rntemplate"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1062658629058-ra9f8nspfqqfb4u6cqgp5ut298q61bac.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAN-eM1yATR-qmVz05oeMrTd_H3Xq1wus4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1062658629058-ra9f8nspfqqfb4u6cqgp5ut298q61bac.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1062658629058-qd8sf69pc809o25mm0msj24348tdakld.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.sky.app"
-              }
-            }
-          ]
+        },
+        "ads_service": {
+          "status": 2
         }
       }
     }
